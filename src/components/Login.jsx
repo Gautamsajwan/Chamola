@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { BsEye } from 'react-icons/bs'
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import LoginGraphics from './LoginGraphics';
+import { AuthContext } from '../Contexts/AuthContext';
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-
+  const context = useContext(AuthContext)
+  const {auth, setAuth} = context
   const navigate = useNavigate();
 
   const handleMouseDown = () => {
@@ -20,38 +22,37 @@ function Login() {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:5000/auth/verifyUser`, {
+      const response = await fetch(`http://10.3.3.200:5000/api/auth/login`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-        credentials: 'include'
+        }, 
+        body: JSON.stringify({email:email, password:password})
       })
-      console.log("respone => ", response);
 
-      const data = await response.json()
-
-      localStorage.setItem('brandName', data.brandName);
-      
-      if (data.success) {
-        navigate("/dashboard")
-        toast.dismiss();
-        toast.success(data.msg)
-      } else {
-        toast.dismiss();
-        toast.error(data.msg)
+      const json = await response.json()
+      console.log(json);
+      if(json.success){
+        toast.success(json.message)
+        setAuth({
+          ...auth,
+          user:json.user,
+          token:json.auth_token
+        })
+        localStorage.setItem('auth', JSON.stringify(auth))
+        navigate('/home')
       }
-    } catch (err) {
-      console.error(err)
+      else{
+        console.error(error);
+      }
+
+    } catch (error) {
+      console.error("Something went wrong");
     }
-  }
+  };
 
   return (
     <div className="text-white relative w-full h-screen overflow-hidden font-montserrat flex flex-col justify-center items-center">
@@ -67,7 +68,7 @@ function Login() {
             <BsEye onMouseUp={handleMouseUp} onMouseDown={handleMouseDown} className="absolute right-4 text-xl cursor-pointer top-1/2 -translate-y-1/2" />
           </div>
 
-          <button onClick={handleLogin} className="mt-4 rounded-full w-[60%] m-auto font-bold px-10 py-2 outline outline-blue-500 hover:bg-blue-400 active:scale-95 transition duration-200 ease-in-out">Login</button>
+          <button onClick={handleLogin} className="mt-4 rounded-full w-fit m-auto font-bold px-10 py-2 outline outline-blue-500 hover:bg-blue-400 active:scale-95 transition duration-200 ease-in-out">Login</button>
         </form>
       </div>
     </div>

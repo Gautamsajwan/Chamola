@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Backdrop from '@mui/material/Backdrop';
 import { CircularProgress } from '@mui/material'
 import { motion } from 'framer-motion'
@@ -12,6 +12,9 @@ import {
   DialogBody,
   DialogFooter,
 } from "@material-tailwind/react";
+import Dropzone from './Dropzone'
+import { useParams } from 'react-router-dom';
+import { AuthContext } from '../Contexts/AuthContext';
 
 function CourseDashboard() {
   const [modules, setModules] = useState([])
@@ -19,14 +22,19 @@ function CourseDashboard() {
   const [assignments, setAssignments] = useState([])
   const [loading, setLoading] = useState(false)
   const [pdfUrl, setPdfUrl] = useState("")
-
+  const [pdf, setPdf] = useState("")
+  const [click, setClick] = useState(true)
+  const params = useParams()
+  const {id} = params
+  const {auth} = useContext(AuthContext)
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
 
   const getAssignments = async (e) => {
+    setClick(false)
     e.preventDefault()
     try {
-      const response = await fetch("http://10.3.3.200:5000/api/courses/get-assignment/64f0533a0dba7cd97b8b3488", {
+      const response = await fetch(`http://10.3.3.200:5000/api/courses/get-assignment/${id}`, {
         method: "GET"
       })
 
@@ -43,7 +51,7 @@ function CourseDashboard() {
     const getCourseDetails = async () => {
       try {
         setLoading(true)
-        const response = await fetch("http://10.3.3.200:5000/api/courses/get-modules/64f0533a0dba7cd97b8b3488", {
+        const response = await fetch(`http://10.3.3.200:5000/api/courses/get-modules/${id}`, {
           method: "GET"
         })
 
@@ -59,8 +67,25 @@ function CourseDashboard() {
     setLoading(false)
   }, [])
 
+  const submitPdf = async(id) => {
+    console.log('id => ', id);
+    try {
+      const response = await fetch(`http://10.3.3.200:5000/api/courses/assignment/response/submit-assignment/${id}`, {
+        method: 'POST',
+        headers: {
+          'authorization': `${auth?.token}`
+        },
+        body: pdf
+      })
+      const json = await response.json()
+      console.log(json);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const weeks = modules.map((item, index) => (
-    <li key={item._id} onClick={() => { handleModule(item._id) }} className="bg-gray-600 p-2 cursor-pointer">week {index + 1}</li>
+    <li key={item._id} onClick={() => { handleModule(item._id) }} className="outline outline-[3px] rounded-full px-3 py-2 cursor-pointer">week {index + 1}</li>
   ))
 
   const handlePdf = async (id, fileName) => {
@@ -68,7 +93,7 @@ function CourseDashboard() {
       const response = await fetch(`http://localhost:5000/api/courses/assignment/get-assignment-pdf/${id}`, {
         method: 'GET',
         headers: {
-          'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGViNWM0ZWJlOWI4ZDU0YThmYjFjYjAiLCJpYXQiOjE2OTMzMzE1NDgsImV4cCI6MTY5MzkzNjM0OH0.iDbODS9vCgo-CdRMBeDvBKUU4vI3BUz7qJcwYe5xTq0',
+          'authorization': `${auth?.token}`
         }
       })
       const json = await response.json()
@@ -87,15 +112,13 @@ function CourseDashboard() {
       <div key={item._id}>{item.title}</div>
       <div className="space-x-3 mt-2 mb-1">
         <button onClick={() => { handlePdf(item._id, item.fileName) }} className="px-3 py-2 w-32 rounded-lg bg-green-500">Download</button>
+ 
         <button className="px-3 py-2 w-32 rounded-lg bg-blue-500" onClick={handleOpen} variant="gradient">Upload</button>
 
-        <Dialog open={open} handler={handleOpen}>
+        <Dialog open={open} item= {item}>
           <DialogHeader className="font-montserrat">Upload your assignment</DialogHeader>
           <DialogBody className="font-montserrat" divider>
-            The key to more success is to have a lot of pillows. Put it this way,
-            it took me twenty five years to get these plants, twenty five years of
-            blood sweat and tears, and I&apos;m never giving up, I&apos;m just
-            getting started. I&apos;m up to something. Fan luv.
+          <Dropzone pdf={pdf} setPdf= {setPdf}/>
           </DialogBody>
           <DialogFooter>
             <Button
@@ -107,7 +130,7 @@ function CourseDashboard() {
               <span className="font-montserrat">Cancel</span>
             </Button>
             <Button variant="gradient" color="green" onClick={handleOpen}>
-              <span className="font-montserrat">Confirm</span>
+              <span className="font-montserrat" onClick={() => {submitPdf(item._id)}}>Confirm</span>
             </Button>
           </DialogFooter>
         </Dialog>
@@ -117,6 +140,7 @@ function CourseDashboard() {
   ))
 
   const handleModule = async (id) => {
+    setClick(true)
     try {
       setLoading(true)
       const response = await fetch(`http://10.3.3.200:5000/api/courses/module/get-lessons/${id}`, {
@@ -147,15 +171,16 @@ function CourseDashboard() {
 
       <div className="w-[30%] lg:w-[20%] h-screen p-3 space-y-3 fixed left-0 border-r-[5px] border-gray-800 text-white font-montserrat font-bold">
         {/* modules */}
-        <ul className="space-y-2">
+        <ul className="space-y-3">
+          <h1 className="px-10 py-2 rounded-full bg-blue-500 hover:translate-x-[2px] -translate-x-10 cursor-pointer transition duration-200 ease-in-out">Modules</h1>
           {weeks}
         </ul>
-        <button onClick={getAssignments} className="bg-gray-600 p-2 cursor-pointer">Assignments</button>
+        <button onClick={getAssignments} className="w-full px-10 rounded-full bg-blue-500 hover:translate-x-[2px] -translate-x-10 transition duration-200 ease-in-out py-2 text-start cursor-pointer">Assignments</button>
       </div>
 
       <div className="w-[70%] lg:w-[80%] px-3 py-3">
-        {/* {courseContent} */}
-        {assignment}
+        { click && courseContent}
+        { !click && assignment}
       </div>
     </div>
   )

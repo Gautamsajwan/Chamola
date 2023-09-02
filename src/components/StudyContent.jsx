@@ -9,7 +9,7 @@ function StudyContent({ description, videoSource }) {
     ))
     return (
         <div className="p-1 py-[7px]">
-            {videoSource && <video className="h-full w-full rounded-md mb-3" controls>
+            {videoSource && <video className="w-[80%] mx-auto rounded-lg mb-3" controls>
                 <source src={videoSource} type="video/mp4" />
                 Your browser does not support the video tag.
             </video>}

@@ -4,9 +4,9 @@ import { Fragment } from 'react'
 
 const solutions = [
   {
-    name: 'Insights',
-    description: 'Measure actions your users take',
-    href: '##',
+    name: 'Create',
+    description: 'Create tailored courses for students',
+    href: '/dashboard/create-course',
     icon: IconOne,
   },
   {

@@ -50,7 +50,7 @@ function ModuleContent({ lesson }) {
                     <h3>{title}</h3>
                     {video ? <BiVideo className="text-blue-400 text-4xl bg-gray-800 rounded-full p-[5px] ml-2 -translate-y-1" /> : <AiOutlineFileText className="text-lime-400 text-4xl bg-gray-800 rounded-full p-[5px] ml-2 -translate-y-1" />}
                 </AccordionHeader>
-                <AccordionBody className="bg-gray-800 px-2 py-1 mt-2 rounded-lg">
+                <AccordionBody className="bg-[rgb(48,51,53)] px-2 py-1 rounded-bl-lg rounded-br-lg">
                     <StudyContent description={description} videoSource={video?.assetURL} />
                 </AccordionBody>
             </Accordion>

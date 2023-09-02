@@ -27,8 +27,8 @@ function Home() {
         </div>
 
         <div className="w-1/2 flex justify-start items-center">
-          {/* <Lottie animationData={boyStudying} className="-mt-10 tablet:w-[500px]" loop={true} />
-          <Lottie animationData={rocket} className="-mt-10 absolute left-1/2 -translate-x-1/2 bottom-[60%] tablet:w-[250px] -z-10 rotate-[30deg]" loop={true} /> */}
+          <Lottie animationData={boyStudying} className="-mt-10 tablet:w-[500px]" loop={true} />
+          <Lottie animationData={rocket} className="-mt-10 absolute left-1/2 -translate-x-1/2 bottom-[60%] tablet:w-[250px] -z-10 rotate-[30deg]" loop={true} />
         </div>
       </section>
 
@@ -40,15 +40,10 @@ function Home() {
         </div>
 
         <div className="mt-7 font-bold rounded-lg grid grid-cols-3 gap-5">
-          <Link to='#'> <div className="col-span-1 px-3 py-2 text-xl h-[150px] bg-red-400 rounded-md flex items-end">Learn</div> </Link>
+          <Link to='/getCourses'> <div className="col-span-1 px-3 py-2 text-xl h-[150px] bg-red-400 rounded-md flex items-end">Learn</div> </Link>
           <Link to='#'> <div className="col-span-1 px-3 py-2 text-xl h-[150px] bg-blue-400 rounded-md flex items-end">Practice</div> </Link>
           <Link to='#'> <div className="col-span-1 px-3 py-2 text-xl h-[150px] bg-green-400 rounded-md flex items-end">Challenges</div> </Link>
         </div>
-      </section>
-
-      <section id="trending courses" className="snap-center w-full h-screen">
-        {/* trending courses */}
-        <iframe src="https://chat.openai.com/" width="100%" height="100%" frameborder="0"></iframe>
       </section>
     </div>
   )

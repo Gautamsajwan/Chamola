@@ -26,8 +26,8 @@ function Navbar() {
             <div className="flex items-center flex-grow justify-end">
                 <ul className="flex gap-2 items-center px-3 py-1 mr-4 border-r-[3px] border-gray-500">
                     <Dropdown />
-                    <li><Link to="/dashboard" className="w-32 ml-[1px] bg-gray-700 text-base px-3 py-[7.5px] rounded-full hover:bg-blue-500 transition ease-in-out"><button className="w-20">Learn</button></Link></li>
-                    <li><Link to="/upload" className="w-32 bg-gray-700 text-base px-3 py-[7.5px] rounded-full hover:bg-blue-500 transition ease-in-out"><button className="w-20">Practice</button></Link></li>
+                    <li><Link to="/home" className="w-32 ml-[1px] bg-gray-700 text-base px-3 py-[7.5px] rounded-full hover:bg-blue-500 transition ease-in-out"><button className="w-20">Learn</button></Link></li>
+                    <li><Link to="/practice" className="w-32 bg-gray-700 text-base px-3 py-[7.5px] rounded-full hover:bg-blue-500 transition ease-in-out"><button className="w-20">Practice</button></Link></li>
                 </ul>
 
                 {/* <button className="px-4 py-2 text-white rounded-md text-base bg-gray-600/40 hover:bg-blue-500 transition-all ease-in-out duration-200" onClick={LogOut}>Log out</button> */}
